@@ -35,3 +35,7 @@ gradle.properties
 .gradletasknamecache
 .gradle/
 build/
+
+#tcpflow results
+report.xml
+output.txt
