@@ -4,12 +4,11 @@ import com.frank0631.nidhogg.book.Book;
 import com.frank0631.nidhogg.book.BookFormat;
 import com.frank0631.nidhogg.customer.Customer;
 
-import uk.co.blackpepper.bowman.Client;
-import uk.co.blackpepper.bowman.ClientFactory;
-import uk.co.blackpepper.bowman.Configuration;
-import uk.co.blackpepper.bowman.annotation.RemoteResource;
-import uk.co.blackpepper.bowman.annotation.ResourceId;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import uk.co.blackpepper.bowman.*;
+import uk.co.blackpepper.bowman.annotation.*;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.annotation.*;
+import com.fasterxml.jackson.annotation.*;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
@@ -17,6 +16,8 @@ import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 import java.net.URI;
 import java.util.*;
@@ -29,16 +30,23 @@ public class HateoasHelper {
     private ClientFactory          clientFactory;
     private Client<CustomerEntity> customerClient;
     private Client<BookEntity>     bookClient;
+    private Client<BookSearch>       bookSearchClient;
 
     public HateoasHelper(String APIAddress) {
         this.APIAddress = APIAddress;
-        this.clientFactory = Configuration.builder().setBaseUri(APIAddress).build().buildClientFactory();
+        this.clientFactory = Configuration.builder()
+        	.setBaseUri(APIAddress)
+        	.setClientHttpRequestFactory(new BufferingClientHttpRequestFactory(
+        		new HttpComponentsClientHttpRequestFactory()))
+        	.build()
+        	.buildClientFactory();
+
         this.customerClient = clientFactory.create(CustomerEntity.class);
         this.bookClient = clientFactory.create(BookEntity.class);
-
+        this.bookSearchClient = clientFactory.create(BookSearch.class);
     }
 
-//These helper methods look ripe for generics 
+    //These helper methods look ripe for generics 
 
     public void getCustomers() {
         Iterable<CustomerEntity> customers = this.customerClient.getAll();
@@ -75,54 +83,25 @@ public class HateoasHelper {
             e.printStackTrace();
         }
     }
+
+    public void getRandomBook(String title) {
+        try {
+			BookEntity rand = this.bookSearchClient.get().getRandomBook(title);
+            System.out.println(rand);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
-//These helper classes might be able to be made dynimically with decorators
-
-    @RemoteResource("/data/customers")
-    public static class CustomerEntity extends Customer {
-        private URI id;
-
-        public CustomerEntity() {
+    public void findBooks(String title) {
+        try {
+			Set<BookEntity> find = this.bookSearchClient.get().findByTitle(title);
+			for (BookEntity b : find) {
+            	System.out.println(b);
+        	}
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        public CustomerEntity(Customer c) {
-            super(c);
-        }
-
-        @ResourceId
-        public URI getId() {
-            return id;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("Customer[id=%s, firstName='%s', lastName='%s']", getId(), getFirstName(), getLastName());
-        }
-
     }
-
-    @RemoteResource("/data/books")
-    public static class BookEntity extends Book {
-        private URI id;
-
-        public BookEntity() {
-        }
-
-        public BookEntity(Book b) {
-            super(b);
-        }
-
-        @ResourceId
-        public URI getId() {
-            return id;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("Book[title=%s, author='%s', publishDate='%s']", getTitle(), getAuthor(), getPublishDate());
-        }
-
-    }
-
 
 }

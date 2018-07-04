@@ -7,9 +7,7 @@ import com.frank0631.nidhogg.calculator.TOperation;
 
 import retrofit2.*;
 import retrofit2.http.*;
-import retrofit2.converter.gson.GsonConverterFactory;
 import com.google.gson.*;
-import com.google.gson.annotations.SerializedName;
 import okhttp3.ResponseBody;
 
 import java.util.*;
