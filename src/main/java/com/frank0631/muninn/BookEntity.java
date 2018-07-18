@@ -15,6 +15,7 @@ import java.net.URI;
         private URI id;
 
         public BookEntity() {
+        	super();
         }
 
         public BookEntity(Book b) {

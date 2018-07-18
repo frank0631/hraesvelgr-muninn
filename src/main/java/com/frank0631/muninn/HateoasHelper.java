@@ -94,8 +94,8 @@ public class HateoasHelper {
     }
     
     public void findBooks(String title) {
-        try {
-			Set<BookEntity> find = this.bookSearchClient.get().findByTitle(title);
+        try { 
+			List<BookEntity> find = this.bookSearchClient.get().findByTitleContaining(title);
 			for (BookEntity b : find) {
             	System.out.println(b);
         	}

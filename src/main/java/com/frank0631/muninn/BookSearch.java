@@ -15,5 +15,8 @@ import java.util.*;
         public BookEntity getRandomBook(String title);
 
         @LinkedResource(rel = "findByTitle")
-        public Set<BookEntity> findByTitle(String title);
+        public List<BookEntity> findByTitle(String title);
+        
+        @LinkedResource(rel = "findByTitleContaining")
+        public List<BookEntity> findByTitleContaining(String title);
     }

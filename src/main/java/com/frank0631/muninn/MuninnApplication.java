@@ -19,8 +19,8 @@ import java.util.*;
 import com.github.javafaker.*;
 
 public class MuninnApplication {
-	private static final String ADDRESS = "http://localhost";
-	private static final int PORT = 9001;
+	private static final String ADDRESS = "http://huginn";
+	private static final int PORT = 9000;
 
 	public static void main(String[] args) {
 		MuninnApplication muninn = new MuninnApplication(ADDRESS, PORT);
@@ -48,7 +48,7 @@ public class MuninnApplication {
 		String title = faker.book().title();
 		Book book = new Book(name, title, "null", "null",
 				BookFormat.ELECTRONIC, 0);
-
+		
 		triftTest(thriftHelper, echoMessage, num1, num2, op);
 		restTest(restHelper, echoMessage, num1, num2, op);
 		hateoasTest(hateoasHelper, customer, book);
@@ -86,14 +86,20 @@ public class MuninnApplication {
 	}
 	
 	public void hateoasTest(HateoasHelper hateoasHelper, Customer customer, Book book){
+		System.out.printf("\naddCustomer\n");
 		hateoasHelper.addCustomer(customer);
+		System.out.printf("\ngetCustomers\n");
 		hateoasHelper.getCustomers();
 
+		System.out.printf("\naddBook\n");
 		hateoasHelper.addBook(book);
+		System.out.printf("\ngetBooks\n");
 		hateoasHelper.getBooks();
 		
+		System.out.printf("\ngetRandomBook with param 'An Acceptable Time'\n");
 		hateoasHelper.getRandomBook("An Acceptable Time");
-		hateoasHelper.findBooks("An");
+		System.out.printf("\nfindBooks with param 'The'\n");
+		hateoasHelper.findBooks("The");
 
 	}
 	

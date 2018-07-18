@@ -29,6 +29,6 @@ dependencies {
 
     compile 'org.springframework.hateoas:spring-hateoas:0.24.0.RELEASE'
 
-    compile 'uk.co.blackpepper.bowman:bowman-client:0.5.1'
+    compile 'uk.co.blackpepper.bowman:bowman-client:0.6.0'
     compile 'com.github.javafaker:javafaker:0.15'
 }
